@@ -13,8 +13,11 @@ protocol APIService: NetworkService {
      Gets All available movie genres
      - Returns: A publisher that will return MovieGenre
      */
-    func getGenres() -> AnyPublisher<MovieGenre, APIServiceError>
+    //    func getGenres() -> AnyPublisher<MovieGenre, APIServiceError>
 
-    
-
+    /**
+     Gets All available movie genres
+     - Returns: A publisher that will return TopRatedMovie
+     */
+    func getTopRatedMoves()
 }
