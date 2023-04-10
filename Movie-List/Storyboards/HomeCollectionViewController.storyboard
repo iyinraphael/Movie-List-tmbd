@@ -13,7 +13,7 @@
         <!--Home-->
         <scene sceneID="n9z-ua-AAe">
             <objects>
-                <collectionViewController storyboardIdentifier="homeCollectionView" id="6KE-Zg-4rc" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="homeCollectionView" id="6KE-Zg-4rc" customClass="HomeCollectionViewController" customModule="Movie_List" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="GRU-ac-JDy">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

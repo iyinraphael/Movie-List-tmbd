@@ -15,7 +15,6 @@ public struct APIEnvironment {
 
     // MARK: - public Properties
     public var movieURL: MoviesURL
-    public let baseURL = "https://api.themoviedb.org/3"
 
     public enum MoviesURL {
         case topRated
@@ -25,7 +24,7 @@ public struct APIEnvironment {
         var baseURL: String {
             switch self {
             case .topRated:
-                return "/movie/top_rated"
+                return "https://api.themoviedb.org/3/movie/top_rated"
             case .popular:
                 return "/movie/popular"
             case .nowPlaying:

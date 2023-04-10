@@ -30,10 +30,9 @@ class MovieAPIService: APIService {
     private func url(for parameters: [URLQueryItem], service: APIEnvironment.MoviesURL) -> URL? {
         let urlPath = service.baseURL
 
-        guard let baseURL = URL(string: environmentAPI.baseURL) else { return nil }
+        guard let baseURL = URL(string: urlPath) else { return nil }
 
-        var urlComponent = URLComponents(url: baseURL, resolvingAgainstBaseURL: true)
-        urlComponent?.path = urlPath
+        var urlComponent = URLComponents(url: baseURL, resolvingAgainstBaseURL: false)
         urlComponent?.queryItems = parameters
 
         return urlComponent?.url
@@ -41,7 +40,7 @@ class MovieAPIService: APIService {
 
     private func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
       do {
-        return try JSONDecoder().decode(type, from: data)
+          return try JSONDecoder().decode(type, from: data)
       } catch let error {
           apiServiceErrorPublisher = .decodeFailure
           print("Got decoding error: \(error)")

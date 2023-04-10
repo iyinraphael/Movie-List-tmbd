@@ -13,6 +13,12 @@ class HomeCollectionViewController: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let environment = APIEnvironment(movieURL: .topRated)
+
+        let apiService = MovieAPIService(environmentAPI: environment)
+
+        apiService.getTopRatedMoves()
+
     }
 
     // MARK: - Navigation
