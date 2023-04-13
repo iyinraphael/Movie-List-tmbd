@@ -12,6 +12,7 @@ class HomeCollectionViewController: UICollectionViewController {
     // MARK: Private Properties
 
     private var dataSource: UICollectionViewDiffableDataSource<String, [Movie]>?
+    fileprivate static let headerTitleSectionKind = "headerTitleSectionKind"
 
     enum Section: CaseIterable {
         case topRated
@@ -49,8 +50,12 @@ class HomeCollectionViewController: UICollectionViewController {
 
             let section = NSCollectionLayoutSection(group: group)
 
-            return section
+            let titleHeaderLayout = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(50))
+            let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleHeaderLayout, elementKind: Self.headerTitleSectionKind, alignment: .top)
 
+            section.boundarySupplementaryItems = [titleHeader]
+
+            return section
         }
         return sectionProvider
     }
@@ -58,9 +63,8 @@ class HomeCollectionViewController: UICollectionViewController {
     private func configureDataSource() {
         let xib = UINib(nibName: MovieCell.description(), bundle: .main)
         let movieCell = UICollectionView.CellRegistration<MovieCell, [Movie]>(cellNib: xib) { cell, indexPath,  movies in
-            if let section = self.dataSource?.snapshot().sectionIdentifier(containingItem: movies) {
-                let movie = movies[indexPath.item]
-            }
+            let movie = movies[indexPath.item]
+            cell.update(movie)
         }
     }
 

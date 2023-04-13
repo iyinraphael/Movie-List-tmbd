@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="U6b-Vx-4bR" customClass="MovieCell" customModule="Movie_List" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="280" height="350"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hae-rd-iSh">
+                    <rect key="frame" x="0.0" y="0.0" width="280" height="350"/>
+                </imageView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="VXr-Tz-HHm"/>
+            <constraints>
+                <constraint firstItem="hae-rd-iSh" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" id="Hfh-GR-BRb"/>
+                <constraint firstItem="hae-rd-iSh" firstAttribute="width" secondItem="U6b-Vx-4bR" secondAttribute="width" id="bpN-zM-Zag"/>
+                <constraint firstItem="hae-rd-iSh" firstAttribute="height" secondItem="U6b-Vx-4bR" secondAttribute="height" id="kVI-cH-kVc"/>
+                <constraint firstItem="hae-rd-iSh" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" id="oK8-uY-QFv"/>
+            </constraints>
+            <connections>
+                <outlet property="posterImage" destination="hae-rd-iSh" id="eCR-H7-VEs"/>
+            </connections>
+            <point key="canvasLocation" x="215" y="-184"/>
+        </collectionReusableView>
+    </objects>
+</document>
