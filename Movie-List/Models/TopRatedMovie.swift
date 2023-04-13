@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TopRatedMovie: Codable {
+struct MovieTMBD: Codable {
 
     // MARK: - Properties
 

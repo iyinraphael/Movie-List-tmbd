@@ -26,9 +26,9 @@ public struct APIEnvironment {
             case .topRated:
                 return "https://api.themoviedb.org/3/movie/top_rated"
             case .popular:
-                return "/movie/popular"
+                return "https://api.themoviedb.org/3/movie/popular"
             case .nowPlaying:
-                return "/movie/now_playing"
+                return "https://api.themoviedb.org/3/movie/now_playing"
             }
         }
     }

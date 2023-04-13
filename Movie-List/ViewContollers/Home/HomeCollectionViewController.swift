@@ -9,16 +9,59 @@ import UIKit
 
 class HomeCollectionViewController: UICollectionViewController {
 
+    // MARK: Private Properties
+
+    private var dataSource: UICollectionViewDiffableDataSource<String, [Movie]>?
+
+    enum Section: CaseIterable {
+        case topRated
+        case popular
+        case nowPlaying
+    }
+
     let reuseIdentifier = "cell"
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let environment = APIEnvironment(movieURL: .topRated)
+//        let environment = APIEnvironment(movieURL: .topRated)
+//
+//        let apiService = MovieAPIService(environmentAPI: environment)
+//
+//        apiService.getTopRatedMoves()
 
-        let apiService = MovieAPIService(environmentAPI: environment)
+        let xib = UINib(nibName: MovieCell.description(), bundle: .main)
+        collectionView.register(xib, forCellWithReuseIdentifier: MovieCell.reuseId)
+        collectionView.collectionViewLayout = makeCollectionView()
+    }
 
-        apiService.getTopRatedMoves()
+    // MARK: - Private Methods
 
+    private func makeCollectionView() -> UICollectionViewLayout {
+        let sectionProvider = UICollectionViewCompositionalLayout { [weak self] (sectionIndex, environment) -> NSCollectionLayoutSection? in
+            _ = self?.dataSource?.snapshot().sectionIdentifiers[sectionIndex]
+
+            let itemSize = NSCollectionLayoutSize(widthDimension: .absolute(100), heightDimension: .absolute(150))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(150))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+
+            let section = NSCollectionLayoutSection(group: group)
+
+            return section
+
+        }
+        return sectionProvider
+    }
+
+    private func configureDataSource() {
+        let xib = UINib(nibName: MovieCell.description(), bundle: .main)
+        let movieCell = UICollectionView.CellRegistration<MovieCell, [Movie]>(cellNib: xib) { cell, indexPath,  movies in
+            if let section = self.dataSource?.snapshot().sectionIdentifier(containingItem: movies) {
+                let movie = movies[indexPath.item]
+            }
+        }
     }
 
     // MARK: - Navigation

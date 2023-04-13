@@ -11,7 +11,7 @@ import Combine
 class MovieAPIService: APIService {
 
     // MARK: - Private Properties
-    @Published private(set) var topRatedMovie: TopRatedMovie?
+    @Published private(set) var topRatedMovie: MovieTMBD?
     @Published private(set) var apiServiceErrorPublisher: APIServiceError?
 
     private var urlSessionDataTask: URLSessionDataTask?
@@ -48,7 +48,7 @@ class MovieAPIService: APIService {
       }
     }
 
- func fetchTopRatedMovies(_ data: Data?, response: URLResponse?, error: Error?) {
+    private func fetchTopRatedMovies(_ data: Data?, response: URLResponse?, error: Error?) {
         if let error = error {
             apiServiceErrorPublisher = .networkFailure
             print("Unable to fetch top rated movies \(error)")
@@ -57,7 +57,7 @@ class MovieAPIService: APIService {
         if let data = data, let response = response as? HTTPURLResponse {
                   if response.statusCode == 200 {
 
-                      self.topRatedMovie = try? self.decode(TopRatedMovie.self, from: data)
+                      self.topRatedMovie = try? self.decode(MovieTMBD.self, from: data)
             }
         }
     }
