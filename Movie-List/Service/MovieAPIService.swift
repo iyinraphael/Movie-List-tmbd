@@ -15,6 +15,7 @@ class MovieAPIService: APIService {
     @Published private(set) var apiServiceErrorPublisher: APIServiceError?
 
     private var urlSessionDataTask: URLSessionDataTask?
+    private var urlSessionPublisherDataTask: URLSession.DataTaskPublisher?
 
     // MARK: - Public Properties
     private let environmentAPI: APIEnvironment
@@ -27,8 +28,8 @@ class MovieAPIService: APIService {
 
     // MARK: - Private Methods
 
-    private func url(for parameters: [URLQueryItem], service: APIEnvironment.MoviesURL) -> URL? {
-        let urlPath = service.baseURL
+    private func url(for parameters: [URLQueryItem], urlPath: String ) -> URL? {
+        //        let urlPath = service.baseURL
 
         guard let baseURL = URL(string: urlPath) else { return nil }
 
@@ -39,41 +40,86 @@ class MovieAPIService: APIService {
     }
 
     private func decode<T>(_ type: T.Type, from data: Data) throws -> T where T: Decodable {
-      do {
-          return try JSONDecoder().decode(type, from: data)
-      } catch let error {
-          apiServiceErrorPublisher = .decodeFailure
-          print("Got decoding error: \(error)")
-          throw error
-      }
+        do {
+            return try JSONDecoder().decode(type, from: data)
+        } catch let error {
+            apiServiceErrorPublisher = .decodeFailure
+            print("Got decoding error: \(error)")
+            throw error
+        }
     }
 
-    private func fetchTopRatedMovies(_ data: Data?, response: URLResponse?, error: Error?) {
+    private func fetchMovieTMBD(_ data: Data?, response: URLResponse?, error: Error?) -> AnyPublisher<MovieTMBD, APIServiceError> {
+
         if let error = error {
             apiServiceErrorPublisher = .networkFailure
             print("Unable to fetch top rated movies \(error)")
+
+            return Future { p in
+                p(.failure(.networkFailure))
+            }.eraseToAnyPublisher()
         }
 
-        if let data = data, let response = response as? HTTPURLResponse {
-                  if response.statusCode == 200 {
+        guard let response = response as? HTTPURLResponse,
+              response.statusCode == 200 else {
+            return Future { p in
+                p(.failure(.networkFailure))
+            }.eraseToAnyPublisher()
+        }
 
-                      self.topRatedMovie = try? self.decode(MovieTMBD.self, from: data)
+        guard let data = data else {
+            return Future { p in
+                p(.failure(.noDataFailure))
+            }.eraseToAnyPublisher()
+        }
+
+        return Just(data)
+            .tryMap { [weak self] data in
+                try self!.decode(MovieTMBD.self, from: data)
             }
-        }
+            .mapError { $0 as! APIServiceError }
+            .eraseToAnyPublisher()
+        //
+        //        if let data = data, let response = response as? HTTPURLResponse {
+        //            if response.statusCode == 200 {
+        //                return Just(data)
+        //                    .tryMap { [weak self] data in
+        //                        try self?.decode(MovieTMBD, from: data)
+        //                    }
+        //            }
+        //        }
     }
 
     // MARK: - Public Methods
 
-    func getTopRatedMoves() {
+    func getMovies(for environment: APIEnvironment.MoviesURL) ->  AnyPublisher<[Movie], APIServiceError> {
+
+
         let apikey = self.environmentAPI.apiKey()
         let parameters = [URLQueryItem(name: "api_key", value: apikey)]
 
-        guard let url = self.url(for: parameters, service: .topRated) else { return }
+        let urlPath = environment.baseURL
 
-        urlSessionDataTask =  URLSession.shared.dataTask(with: url, completionHandler: { data, response, error in
-            self.fetchTopRatedMovies(data, response: response, error: error)
-        })
+        guard let url = self.url(for: parameters, urlPath: urlPath) else {
+            fatalError()
+        }
 
-        urlSessionDataTask?.resume()
+        return URLSession.shared
+            .dataTaskPublisher(for: url)
+            .map { $0.data }
+            .decode(type: MovieTMBD.self, decoder: JSONDecoder())
+            .mapError { _ -> APIServiceError in
+                return APIServiceError.networkFailure
+            }
+            .map { $0.results }
+            .eraseToAnyPublisher()
     }
-}
+
+
+//        urlSessionDataTask =  URLSession.shared.dataTask(with: url, completionHandler: { data, response, error in
+//            self.fetchMovieTMBD(data, response: response, error: error)
+//        })
+//
+//        urlSessionDataTask?.resume()
+    }
+

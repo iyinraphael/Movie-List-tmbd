@@ -13,8 +13,8 @@ public struct APIEnvironment {
     // MARK: Private properties
     private let APIKey = "e202e696bf07ade85569aa1904a4deb5"
 
-    // MARK: - public Properties
-    public var movieURL: MoviesURL
+//    // MARK: - public Properties
+//    public var movieURL: MoviesURL
 
     public enum MoviesURL {
         case topRated

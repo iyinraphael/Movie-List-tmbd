@@ -19,5 +19,5 @@ protocol APIService: NetworkService {
      Gets All available movie genres
      - Returns: A publisher that will return TopRatedMovie
      */
-    func getTopRatedMoves()
+    func getMovies(for environment: APIEnvironment.MoviesURL) -> AnyPublisher<[Movie], APIServiceError> 
 }

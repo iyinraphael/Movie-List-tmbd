@@ -6,15 +6,28 @@
 //
 
 import UIKit
+import Combine
 
 class HomeCollectionViewController: UICollectionViewController {
 
-    // MARK: Private Properties
+    // MARK: - Private Properties
 
     private var dataSource: UICollectionViewDiffableDataSource<String, [Movie]>?
     fileprivate static let headerTitleSectionKind = "headerTitleSectionKind"
 
-    enum Section: CaseIterable {
+    private var homeViewModel: HomeViewModel?
+    private var apiEnvironment: APIEnvironment.MoviesURL?
+
+    private var topRatedMovies: [Movie]?
+    private var popularMovies: [Movie]?
+    private var nowPlayingMovies: [Movie]?
+
+    private let environment = APIEnvironment()
+
+    private var subscription: Set<AnyCancellable> = []
+
+
+    private enum Section: CaseIterable {
         case topRated
         case popular
         case nowPlaying
@@ -22,17 +35,18 @@ class HomeCollectionViewController: UICollectionViewController {
 
     let reuseIdentifier = "cell"
 
+    // MARK: - View Controller Cycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let environment = APIEnvironment(movieURL: .topRated)
-//
-//        let apiService = MovieAPIService(environmentAPI: environment)
-//
-//        apiService.getTopRatedMoves()
+        let apiService = MovieAPIService(environmentAPI: environment)
+        homeViewModel = HomeViewModel(apiService: apiService)
 
         let xib = UINib(nibName: MovieCell.description(), bundle: .main)
         collectionView.register(xib, forCellWithReuseIdentifier: MovieCell.reuseId)
         collectionView.collectionViewLayout = makeCollectionView()
+
+        setUpBinding()
     }
 
     // MARK: - Private Methods
@@ -62,10 +76,47 @@ class HomeCollectionViewController: UICollectionViewController {
 
     private func configureDataSource() {
         let xib = UINib(nibName: MovieCell.description(), bundle: .main)
-        let movieCell = UICollectionView.CellRegistration<MovieCell, [Movie]>(cellNib: xib) { cell, indexPath,  movies in
+        let movieCellRegistration = UICollectionView.CellRegistration<MovieCell, [Movie]>(cellNib: xib) { cell, indexPath,  movies in
             let movie = movies[indexPath.item]
             cell.update(movie)
         }
+        
+        let titleHeaderRegistration = UICollectionView.SupplementaryRegistration<HomeSectionHeaderView>(supplementaryNib: UINib(nibName: HomeSectionHeaderView.description(), bundle: .main), elementKind: Self.headerTitleSectionKind) { supplementaryView, elementKind, indexPath in
+            let section = self.dataSource?.snapshot().sectionIdentifiers[indexPath.section]
+            supplementaryView.titleLabel.text = section
+        }
+        
+        dataSource = UICollectionViewDiffableDataSource<String, [Movie]>(collectionView: collectionView) {(collectionView, indexPath, item) -> UICollectionViewCell? in
+            return collectionView.dequeueConfiguredReusableCell(using: movieCellRegistration, for: indexPath, item: item)
+        }
+        
+        dataSource?.supplementaryViewProvider = { (collectionView, _, indexPath) in
+            return collectionView.dequeueConfiguredReusableSupplementary(using: titleHeaderRegistration, for: indexPath)
+        }
+    }
+
+
+    private func setUpBinding() {
+        homeViewModel?.topRatedMoviesPublisher
+            .sink(receiveCompletion: { _ in
+                print("error")
+            }, receiveValue: { [weak self] topRatedMovies in
+                self?.topRatedMovies = topRatedMovies
+            }).store(in: &subscription)
+
+        homeViewModel?.popularMoviesPublisher
+            .sink(receiveCompletion: { _ in
+                print("error")
+            }, receiveValue: { [weak self] popularMovies in
+                self?.popularMovies = popularMovies
+            }).store(in: &subscription)
+
+        homeViewModel?.popularMoviesPublisher
+            .sink(receiveCompletion: { _ in
+                print("error")
+            }, receiveValue: { [weak self] popularMovies in
+                self?.popularMovies = popularMovies
+            }).store(in: &subscription)
     }
 
     // MARK: - Navigation

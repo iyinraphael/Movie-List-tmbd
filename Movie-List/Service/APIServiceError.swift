@@ -14,4 +14,5 @@ enum APIServiceError: Error {
     case decodeFailure
     case networkFailure
     case generalFailure
+    case noDataFailure
 }
