@@ -21,12 +21,14 @@ class MovieCell: UICollectionViewCell {
         let pathUrl = movie.backdropPath
         let baseString = "https://image.tmdb.org/t/p/w185\(pathUrl)"
 
-        guard let imageUrl = URL(string: baseString),
-              let imageData = try? Data(contentsOf: imageUrl)else {  fatalError("unable to fetch image") }
+        DispatchQueue.global(priority: .background).async {
+            guard let imageUrl = URL(string: baseString),
+                  let imageData = try? Data(contentsOf: imageUrl)else {  fatalError("unable to fetch image") }
 
-        DispatchQueue.main.async { [weak self] in
-            if let image = UIImage(data: imageData) {
-                self?.posterImage.image = image
+            DispatchQueue.main.async { [weak self] in
+                if let image = UIImage(data: imageData) {
+                    self?.posterImage.image = image
+                }
             }
         }
     }
