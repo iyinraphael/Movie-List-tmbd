@@ -18,7 +18,17 @@ class MovieCell: UICollectionViewCell {
     }
 
     func update(_ movie: Movie) {
+        let pathUrl = movie.backdropPath
+        let baseString = "https://image.tmdb.org/t/p/w185\(pathUrl)"
 
+        guard let imageUrl = URL(string: baseString),
+              let imageData = try? Data(contentsOf: imageUrl)else {  fatalError("unable to fetch image") }
+
+        DispatchQueue.main.async { [weak self] in
+            if let image = UIImage(data: imageData) {
+                self?.posterImage.image = image
+            }
+        }
     }
 
 }

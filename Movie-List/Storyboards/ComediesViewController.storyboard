@@ -19,7 +19,7 @@
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Fast Laughs" image="smiley" catalog="system" id="T1o-Nf-BIz"/>
+                    <tabBarItem key="tabBarItem" title="Fast Laughs" image="face.smiling" catalog="system" id="T1o-Nf-BIz"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -28,7 +28,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="smiley" catalog="system" width="128" height="123"/>
+        <image name="face.smiling" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

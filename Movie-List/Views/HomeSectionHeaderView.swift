@@ -12,6 +12,8 @@ class HomeSectionHeaderView: UICollectionReusableView {
     // MARK: - Outlets
     @IBOutlet weak var titleLabel: UILabel!
 
+    static let id = "homeSectionHeaderView"
+
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
