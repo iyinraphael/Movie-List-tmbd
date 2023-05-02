@@ -28,6 +28,7 @@ class HomeCollectionViewController: UICollectionViewController {
 
 
     private enum Section: String, CaseIterable {
+        case banner = "Banner"
         case topRated = "Top Rated"
         case popular = "Popular"
         case nowPlaying = "Now Playing"
@@ -42,8 +43,6 @@ class HomeCollectionViewController: UICollectionViewController {
         let apiService = MovieAPIService(environmentAPI: environment)
         homeViewModel = HomeViewModel(apiService: apiService)
 
-        let xib = UINib(nibName: "MovieCell", bundle: .main)
-        collectionView.register(xib, forCellWithReuseIdentifier: MovieCell.reuseId)
         collectionView.collectionViewLayout = makeCollectionView()
 
         setUpBinding()
@@ -54,33 +53,50 @@ class HomeCollectionViewController: UICollectionViewController {
 
     private func makeCollectionView() -> UICollectionViewLayout {
         let sectionProvider = UICollectionViewCompositionalLayout { [weak self] (sectionIndex, environment) -> NSCollectionLayoutSection? in
-            _ = self?.dataSource?.snapshot().sectionIdentifiers[sectionIndex]
+            let sectionId = self?.dataSource?.snapshot().sectionIdentifiers[sectionIndex]
 
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1/4), heightDimension: .fractionalHeight(1.0))
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            if sectionId?.rawValue == "Banner" {
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-            item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20)
 
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1/5))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(2/3))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
 
-            let section = NSCollectionLayoutSection(group: group)
-            section.orthogonalScrollingBehavior = .continuous
+                let section = NSCollectionLayoutSection(group: group)
 
-            let titleHeaderLayout = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(24))
-            let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleHeaderLayout, elementKind: Self.headerTitleSectionKind, alignment: .top)
+                return section
+            } else {
 
-            section.boundarySupplementaryItems = [titleHeader]
+                let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1/4), heightDimension: .fractionalHeight(1.0))
+                let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-            return section
+                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8)
+
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1/5))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+
+                let section = NSCollectionLayoutSection(group: group)
+                section.orthogonalScrollingBehavior = .continuous
+
+                let titleHeaderLayout = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(24))
+                let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleHeaderLayout, elementKind: Self.headerTitleSectionKind, alignment: .top)
+
+                section.boundarySupplementaryItems = [titleHeader]
+
+                return section
+            }
         }
         return sectionProvider
     }
 
     private func configureDataSource() {
-        let xib = UINib(nibName: "MovieCell", bundle: .main)
+        let movieCellRegistration = UICollectionView.CellRegistration<MovieCell, Movie>(cellNib: UINib(nibName: "MovieCell", bundle: .main)) { cell, _,  movie in
+            cell.update(movie)
+        }
 
-        let movieCellRegistration = UICollectionView.CellRegistration<MovieCell, Movie>(cellNib: xib) { cell, _,  movie in
+        let movieBannerCellRegistration = UICollectionView.CellRegistration<MovieBannerCell, Movie>(cellNib: UINib(nibName: "MovieBannerCell", bundle: .main)) { cell, _, movie in
             cell.update(movie)
         }
         
@@ -88,6 +104,10 @@ class HomeCollectionViewController: UICollectionViewController {
             let section = self.dataSource?.snapshot().sectionIdentifiers[indexPath.section]
             supplementaryView.titleLabel.text = section?.rawValue
         }
+
+        dataSource = UICollectionViewDiffableDataSource<Section, Movie>(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
+            return collectionView.dequeueConfiguredReusableCell(using: movieBannerCellRegistration, for: indexPath, item: item)
+        })
         
         dataSource = UICollectionViewDiffableDataSource<Section, Movie>(collectionView: collectionView) {(collectionView, indexPath, item) -> UICollectionViewCell? in
             return collectionView.dequeueConfiguredReusableCell(using: movieCellRegistration, for: indexPath, item: item)
@@ -104,20 +124,30 @@ class HomeCollectionViewController: UICollectionViewController {
 
         homeViewModel?.topRatedMoviesPublisher
             .sink(receiveCompletion: { _ in
-                print("error")
+                print("completion done")
+            }, receiveValue: { [weak self] topRated in
+                let movie = topRated.first
+                snapshot.appendSections([.banner])
+                snapshot.appendItems([movie!])
+                self?.dataSource?.apply(snapshot)
+            }).store(in: &subscription)
+
+        homeViewModel?.topRatedMoviesPublisher
+            .sink(receiveCompletion: { _ in
+                print("completion done")
             }, receiveValue: { [weak self] topRatedMovies in
                 snapshot.appendSections([.topRated])
-                self?.dataSource?.apply(snapshot)
                 snapshot.appendItems(topRatedMovies)
+                self?.dataSource?.apply(snapshot)
             }).store(in: &subscription)
 
         homeViewModel?.popularMoviesPublisher
             .sink(receiveCompletion: { _ in
-                print("error")
+                print("completion done")
             }, receiveValue: { [weak self] popularMovies in
                 snapshot.appendSections([.popular])
-                self?.dataSource?.apply(snapshot)
                 snapshot.appendItems(popularMovies)
+                self?.dataSource?.apply(snapshot)
             }).store(in: &subscription)
 
         homeViewModel?.nowPlayingMoviesPublisher
@@ -125,8 +155,8 @@ class HomeCollectionViewController: UICollectionViewController {
                 print("error")
             }, receiveValue: { [weak self] nowPlayingMovies in
                 snapshot.appendSections([.nowPlaying])
-                self?.dataSource?.apply(snapshot)
                 snapshot.appendItems(nowPlayingMovies)
+                self?.dataSource?.apply(snapshot)
             }).store(in: &subscription)
     }
 }

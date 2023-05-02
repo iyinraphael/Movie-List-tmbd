@@ -11,7 +11,7 @@ struct Movie: Codable, Hashable {
 
     // MARK: - Properties
 
-    let id: Int
+    let id: UUID = UUID()
     let title: String
     let releaseDate: String
     let posterPath: String
