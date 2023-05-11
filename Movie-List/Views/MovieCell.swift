@@ -15,10 +15,12 @@ class MovieCell: UICollectionViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        layer.masksToBounds = true
+        layer.cornerRadius = 4.0
     }
 
     func update(_ movie: Movie) {
-        let pathUrl = movie.backdropPath
+        let pathUrl = movie.posterPath
         let baseString = "https://image.tmdb.org/t/p/w185\(pathUrl)"
 
         DispatchQueue.global(priority: .background).async {

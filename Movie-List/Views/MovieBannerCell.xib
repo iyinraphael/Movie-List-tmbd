@@ -21,45 +21,62 @@
                         <rect key="frame" x="0.0" y="0.0" width="444" height="689"/>
                     </imageView>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="FX6-mv-Ywj">
-                        <rect key="frame" x="111.00000000000001" y="540.66666666666663" width="222.33333333333337" height="124.33333333333337"/>
+                        <rect key="frame" x="112.66666666666669" y="616.66666666666663" width="219" height="64.333333333333371"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Movie" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gq1-Nl-fKY">
-                                <rect key="frame" x="0.0" y="0.0" width="222.33333333333334" height="60"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="50"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zZP-XO-6Xc">
-                                <rect key="frame" x="0.0" y="60.000000000000007" width="222.33333333333334" height="20.333333333333336"/>
+                                <rect key="frame" x="0.0" y="0.0" width="219" height="20.333333333333332"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c14-1A-1yP">
-                                <rect key="frame" x="0.0" y="80.333333333333371" width="222.33333333333334" height="44"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="c14-1A-1yP">
+                                <rect key="frame" x="0.0" y="20.333333333333371" width="219" height="44"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u61-7R-PTo">
-                                        <rect key="frame" x="0.0" y="0.0" width="111" height="44"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="107" height="44"/>
+                                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="E1p-Du-PMp"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="5" maxY="0.0"/>
                                         <state key="normal" title="Play" image="play" catalog="system"/>
+                                        <state key="selected" image="square.and.arrow.up" catalog="system"/>
                                         <state key="highlighted" image="play.fill" catalog="system">
                                             <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
-                                        <buttonConfiguration key="configuration" style="plain" image="play" catalog="system" title="Play" imagePadding="5">
-                                            <fontDescription key="titleFontDescription" type="system" pointSize="18"/>
-                                        </buttonConfiguration>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="playMovie:" destination="gTV-IL-0wX" eventType="touchUpInside" id="6cM-up-WJH"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Er-n1-32Y">
-                                        <rect key="frame" x="111" y="0.0" width="111.33333333333331" height="44"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" image="plus" catalog="system" title="My List" imagePadding="5"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Er-n1-32Y">
+                                        <rect key="frame" x="112" y="0.0" width="107" height="44"/>
+                                        <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="107" id="sbG-L1-3pj"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="5" maxY="0.0"/>
+                                        <state key="normal" title="My List" image="plus" catalog="system">
+                                            <color key="titleShadowColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <state key="highlighted" title="My List" image="plus" catalog="system">
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <color key="titleShadowColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                <integer key="value" value="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
                                         <connections>
                                             <action selector="AddToMyList:" destination="gTV-IL-0wX" eventType="touchUpInside" id="4oS-dV-XHR"/>
                                         </connections>
@@ -73,10 +90,10 @@
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
                 <constraint firstItem="269-4o-MVn" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" id="8yW-a8-mGm"/>
-                <constraint firstItem="gq1-Nl-fKY" firstAttribute="centerX" secondItem="269-4o-MVn" secondAttribute="centerX" id="KuS-eb-ERv"/>
                 <constraint firstItem="269-4o-MVn" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="Sbj-WA-JHm"/>
-                <constraint firstAttribute="bottom" secondItem="FX6-mv-Ywj" secondAttribute="bottom" constant="24" id="WBy-Zp-CPn"/>
+                <constraint firstAttribute="bottom" secondItem="FX6-mv-Ywj" secondAttribute="bottom" constant="8" id="WBy-Zp-CPn"/>
                 <constraint firstItem="269-4o-MVn" firstAttribute="height" secondItem="gTV-IL-0wX" secondAttribute="height" id="t35-Is-wI5"/>
+                <constraint firstItem="FX6-mv-Ywj" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="u5B-Dm-QM8"/>
                 <constraint firstItem="269-4o-MVn" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="ugs-Ys-N0w"/>
             </constraints>
             <size key="customSize" width="444" height="689"/>
@@ -84,7 +101,7 @@
                 <outlet property="genreLabel" destination="zZP-XO-6Xc" id="w24-UQ-2m4"/>
                 <outlet property="myListButton" destination="7Er-n1-32Y" id="6VM-Pf-lby"/>
                 <outlet property="playButton" destination="u61-7R-PTo" id="8Rj-df-TXO"/>
-                <outlet property="titleLabel" destination="gq1-Nl-fKY" id="sf8-4Y-F7E"/>
+                <outlet property="posterImage" destination="269-4o-MVn" id="QrI-xM-qUA"/>
             </connections>
             <point key="canvasLocation" x="436.64122137404576" y="-182.74647887323945"/>
         </collectionViewCell>
@@ -93,5 +110,6 @@
         <image name="play" catalog="system" width="117" height="128"/>
         <image name="play.fill" catalog="system" width="117" height="128"/>
         <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="square.and.arrow.up" catalog="system" width="115" height="128"/>
     </resources>
 </document>
