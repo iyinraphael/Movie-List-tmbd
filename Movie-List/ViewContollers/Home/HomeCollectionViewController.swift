@@ -44,6 +44,7 @@ class HomeCollectionViewController: UICollectionViewController {
         homeViewModel = HomeViewModel(apiService: apiService)
 
         collectionView.collectionViewLayout = makeCollectionView()
+        collectionView.showsVerticalScrollIndicator = false
 
         setUpBinding()
         configureDataSource()
@@ -59,7 +60,7 @@ class HomeCollectionViewController: UICollectionViewController {
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 20, trailing: 20)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 20, bottom: 40, trailing: 20)
 
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(2/3))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
@@ -72,7 +73,7 @@ class HomeCollectionViewController: UICollectionViewController {
                 let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1/4), heightDimension: .fractionalHeight(1.0))
                 let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 8)
+                item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 12, trailing: 8)
 
                 let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1/5))
                 let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
@@ -82,6 +83,7 @@ class HomeCollectionViewController: UICollectionViewController {
 
                 let titleHeaderLayout = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(24))
                 let titleHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: titleHeaderLayout, elementKind: Self.headerTitleSectionKind, alignment: .top)
+                titleHeader.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 0)
 
                 section.boundarySupplementaryItems = [titleHeader]
 
@@ -92,6 +94,7 @@ class HomeCollectionViewController: UICollectionViewController {
     }
 
     private func configureDataSource() {
+
         let movieCellRegistration = UICollectionView.CellRegistration<MovieCell, Movie>(cellNib: UINib(nibName: "MovieCell", bundle: .main)) { cell, _,  movie in
             cell.update(movie)
         }
@@ -104,13 +107,16 @@ class HomeCollectionViewController: UICollectionViewController {
             let section = self.dataSource?.snapshot().sectionIdentifiers[indexPath.section]
             supplementaryView.titleLabel.text = section?.rawValue
         }
-
-        dataSource = UICollectionViewDiffableDataSource<Section, Movie>(collectionView: collectionView, cellProvider: { collectionView, indexPath, item in
-            return collectionView.dequeueConfiguredReusableCell(using: movieBannerCellRegistration, for: indexPath, item: item)
-        })
         
         dataSource = UICollectionViewDiffableDataSource<Section, Movie>(collectionView: collectionView) {(collectionView, indexPath, item) -> UICollectionViewCell? in
-            return collectionView.dequeueConfiguredReusableCell(using: movieCellRegistration, for: indexPath, item: item)
+            let section = self.dataSource?.snapshot().sectionIdentifier(containingItem: item)
+
+            switch section {
+            case .banner:
+                return collectionView.dequeueConfiguredReusableCell(using: movieBannerCellRegistration, for: indexPath, item: item)
+            default:
+                return collectionView.dequeueConfiguredReusableCell(using: movieCellRegistration, for: indexPath, item: item)
+            }
         }
         
         dataSource?.supplementaryViewProvider = { (collectionView, _, indexPath) in
@@ -126,9 +132,10 @@ class HomeCollectionViewController: UICollectionViewController {
             .sink(receiveCompletion: { _ in
                 print("completion done")
             }, receiveValue: { [weak self] topRated in
-                let movie = topRated.first
+                let randomNum = (0..<topRated.count).randomElement() ?? 0
+                let movie = topRated[randomNum]
                 snapshot.appendSections([.banner])
-                snapshot.appendItems([movie!])
+                snapshot.appendItems([movie])
                 self?.dataSource?.apply(snapshot)
             }).store(in: &subscription)
 
